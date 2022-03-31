@@ -23,7 +23,7 @@ import org.knowm.xchange.okex.v5.dto.marketdata.*;
 public interface Okex {
   String instrumentsPath = "/public/instruments"; // Stated as 20 req/2 sec
   String fundingRatePath = "/public/funding-rate"; // Stated as 20 req/2 sec
-  String fundingRateHistoryPath = "/public/funding-rate-history"; // Stated as 20 req/2 sec
+  String fundingRateHistoryPath = "/public/funding-rate-history"; // Stated as 10 req/2 sec
 
   // To avoid 429s, actual req/second may need to be lowered!
   Map<String, List<Integer>> publicPathRateLimits =
