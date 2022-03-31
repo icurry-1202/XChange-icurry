@@ -1,16 +1,10 @@
 package org.knowm.xchange.okex.v5.service;
 
-import static org.knowm.xchange.okex.v5.OkexAuthenticated.amendBatchOrderPath;
-import static org.knowm.xchange.okex.v5.OkexAuthenticated.amendOrderPath;
-import static org.knowm.xchange.okex.v5.OkexAuthenticated.cancelBatchOrderPath;
-import static org.knowm.xchange.okex.v5.OkexAuthenticated.cancelOrderPath;
-import static org.knowm.xchange.okex.v5.OkexAuthenticated.orderDetailsPath;
-import static org.knowm.xchange.okex.v5.OkexAuthenticated.placeBatchOrderPath;
-import static org.knowm.xchange.okex.v5.OkexAuthenticated.placeOrderPath;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+
+import io.github.resilience4j.ratelimiter.RateLimiter;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.okex.v5.OkexExchange;
 import org.knowm.xchange.okex.v5.dto.OkexException;
@@ -21,6 +15,8 @@ import org.knowm.xchange.okex.v5.dto.trade.OkexOrderDetails;
 import org.knowm.xchange.okex.v5.dto.trade.OkexOrderRequest;
 import org.knowm.xchange.okex.v5.dto.trade.OkexOrderResponse;
 import org.knowm.xchange.utils.DateUtils;
+
+import static org.knowm.xchange.okex.v5.OkexAuthenticated.*;
 
 /** Author: Max Gao (gaamox@tutanota.com) Created: 08-06-2021 */
 public class OkexTradeServiceRaw extends OkexBaseService {
@@ -61,6 +57,7 @@ public class OkexTradeServiceRaw extends OkexBaseService {
                       after,
                       before,
                       limit))
+          .withRateLimiter((rateLimiter(pendingOrdersPath)))
           .call();
     } catch (OkexException e) {
       throw handleError(e);
@@ -124,7 +121,7 @@ public class OkexTradeServiceRaw extends OkexBaseService {
                           exchange
                               .getExchangeSpecification()
                               .getExchangeSpecificParametersItem("simulated")))
-          .withRateLimiter((rateLimiter(orderDetailsPath)))
+          .withRateLimiter((rateLimiter(ordersHistoryPath)))
           .call();
     } catch (OkexException e) {
       throw handleError(e);

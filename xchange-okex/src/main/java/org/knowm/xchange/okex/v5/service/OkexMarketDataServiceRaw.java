@@ -1,6 +1,6 @@
 package org.knowm.xchange.okex.v5.service;
 
-import static org.knowm.xchange.okex.v5.Okex.instrumentsPath;
+import static org.knowm.xchange.okex.v5.Okex.*;
 import static org.knowm.xchange.okex.v5.OkexAuthenticated.currenciesPath;
 
 import java.io.IOException;
@@ -10,11 +10,7 @@ import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.okex.v5.OkexExchange;
 import org.knowm.xchange.okex.v5.dto.OkexException;
 import org.knowm.xchange.okex.v5.dto.OkexResponse;
-import org.knowm.xchange.okex.v5.dto.marketdata.OkexCandleStick;
-import org.knowm.xchange.okex.v5.dto.marketdata.OkexCurrency;
-import org.knowm.xchange.okex.v5.dto.marketdata.OkexInstrument;
-import org.knowm.xchange.okex.v5.dto.marketdata.OkexOrderbook;
-import org.knowm.xchange.okex.v5.dto.marketdata.OkexTrade;
+import org.knowm.xchange.okex.v5.dto.marketdata.*;
 import org.knowm.xchange.utils.DateUtils;
 
 /** Author: Max Gao (gaamox@tutanota.com) Created: 08-06-2021 */
@@ -40,6 +36,45 @@ public class OkexMarketDataServiceRaw extends OkexBaseService {
                               .getExchangeSpecificParametersItem("simulated")))
           .withRateLimiter(rateLimiter(instrumentsPath))
           .call();
+    } catch (OkexException e) {
+      throw handleError(e);
+    }
+  }
+
+  public OkexResponse<List<OkexFundingRate>> getOkexFundingRate( String instrumentId)
+          throws OkexException, IOException {
+    try {
+      return decorateApiCall(
+              () ->
+                      okex.getFundingRate(
+                              instrumentId,
+                              (String)
+                                      exchange
+                                              .getExchangeSpecification()
+                                              .getExchangeSpecificParametersItem("simulated")))
+              .withRateLimiter(rateLimiter(fundingRatePath))
+              .call();
+    } catch (OkexException e) {
+      throw handleError(e);
+    }
+  }
+
+  public OkexResponse<List<OkexFundingRateHistory>> getOkexFundingRateHistory(String instrumentId, String before, String after, String limit)
+          throws OkexException, IOException {
+    try {
+      return decorateApiCall(
+              () ->
+                      okex.getFundingRateHistory(
+                              instrumentId,
+                              before,
+                              after,
+                              limit,
+                              (String)
+                                      exchange
+                                              .getExchangeSpecification()
+                                              .getExchangeSpecificParametersItem("simulated")))
+              .withRateLimiter(rateLimiter(fundingRateHistoryPath))
+              .call();
     } catch (OkexException e) {
       throw handleError(e);
     }
@@ -100,5 +135,13 @@ public class OkexMarketDataServiceRaw extends OkexBaseService {
         limit,
         (String)
             exchange.getExchangeSpecification().getExchangeSpecificParametersItem("simulated"));
+  }
+
+  public OkexResponse<List<OkexTicker>> getMarketTicker(String instId)
+          throws OkexException, IOException {
+    return okex.getMarketTicker(
+            instId,
+            (String)
+                    exchange.getExchangeSpecification().getExchangeSpecificParametersItem("simulated"));
   }
 }
