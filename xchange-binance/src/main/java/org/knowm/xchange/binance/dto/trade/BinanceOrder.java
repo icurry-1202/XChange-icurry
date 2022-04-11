@@ -7,7 +7,7 @@ import java.util.Date;
 public final class BinanceOrder {
 
   public final String symbol;
-  public final long orderId;
+  public final Long orderId;
   public final String clientOrderId;
   public final BigDecimal price;
   public final BigDecimal origQty;
@@ -19,11 +19,15 @@ public final class BinanceOrder {
   public final OrderSide side;
   public final BigDecimal stopPrice;
   public final BigDecimal icebergQty;
-  public final long time;
+  public final Long time;
+  public final Boolean isWorking;
+  public final Boolean isIsolated;
+  public final Long updateTime;
+
 
   public BinanceOrder(
       @JsonProperty("symbol") String symbol,
-      @JsonProperty("orderId") long orderId,
+      @JsonProperty("orderId") Long orderId,
       @JsonProperty("clientOrderId") String clientOrderId,
       @JsonProperty("price") BigDecimal price,
       @JsonProperty("origQty") BigDecimal origQty,
@@ -35,7 +39,10 @@ public final class BinanceOrder {
       @JsonProperty("side") OrderSide side,
       @JsonProperty("stopPrice") BigDecimal stopPrice,
       @JsonProperty("icebergQty") BigDecimal icebergQty,
-      @JsonProperty("time") long time) {
+      @JsonProperty("time") Long time,
+      @JsonProperty("isWorking") Boolean isWorking,
+      @JsonProperty("isIsolated") Boolean isIsolated,
+      @JsonProperty("updateTime") Long updateTime) {
     this.symbol = symbol;
     this.orderId = orderId;
     this.clientOrderId = clientOrderId;
@@ -50,6 +57,9 @@ public final class BinanceOrder {
     this.stopPrice = stopPrice;
     this.icebergQty = icebergQty;
     this.time = time;
+    this.isWorking = isWorking;
+    this.isIsolated = isIsolated;
+    this.updateTime = updateTime;
   }
 
   public Date getTime() {

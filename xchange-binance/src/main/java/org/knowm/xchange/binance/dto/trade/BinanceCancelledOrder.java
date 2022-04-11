@@ -16,6 +16,7 @@ public final class BinanceCancelledOrder {
   public String timeInForce;
   public String type;
   public String side;
+  public boolean isIsolated;
 
   public BinanceCancelledOrder(
       @JsonProperty("symbol") String symbol,
@@ -29,7 +30,8 @@ public final class BinanceCancelledOrder {
       @JsonProperty("status") String status,
       @JsonProperty("timeInForce") String timeInForce,
       @JsonProperty("type") String type,
-      @JsonProperty("side") String side) {
+      @JsonProperty("side") String side,
+      @JsonProperty("isIsolated") boolean isIsolated) {
     super();
     this.symbol = symbol;
     this.origClientOrderId = origClientOrderId;
@@ -43,5 +45,6 @@ public final class BinanceCancelledOrder {
     this.timeInForce = timeInForce;
     this.type = type;
     this.side = side;
+    this.isIsolated = isIsolated;
   }
 }

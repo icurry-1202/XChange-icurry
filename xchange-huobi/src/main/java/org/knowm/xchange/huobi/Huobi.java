@@ -1,6 +1,8 @@
 package org.knowm.xchange.huobi;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -9,17 +11,12 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+
+import org.knowm.xchange.huobi.dto.HuobiResultV3;
+import org.knowm.xchange.huobi.dto.account.HuobiAccountTransferRequest;
 import org.knowm.xchange.huobi.dto.account.HuobiCreateWithdrawRequest;
-import org.knowm.xchange.huobi.dto.account.results.HuobiAccountResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiBalanceResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiCreateWithdrawResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiDepositAddressResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiDepositAddressV2Result;
-import org.knowm.xchange.huobi.dto.account.results.HuobiDepositAddressWithTagResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiFeeRateResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiFundingHistoryResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiTransactFeeRateResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiWithdrawFeeRangeResult;
+import org.knowm.xchange.huobi.dto.account.results.*;
+import org.knowm.xchange.huobi.dto.marketdata.HuobiSymbolInfo;
 import org.knowm.xchange.huobi.dto.marketdata.results.HuobiAllTickersResult;
 import org.knowm.xchange.huobi.dto.marketdata.results.HuobiAssetPairsResult;
 import org.knowm.xchange.huobi.dto.marketdata.results.HuobiAssetsResult;
@@ -73,6 +70,10 @@ public interface Huobi {
   @GET
   @Path("v1/common/currencys")
   HuobiAssetsResult getAssets() throws IOException;
+
+  @GET
+  @Path("v2/settings/common/symbols")
+  HuobiResultV3<List<HuobiSymbolInfo>> getCommonSymbols(@QueryParam("ts") Long ts) throws IOException;
 
   @GET
   @Path("v1/fee/fee-rate/get")
@@ -213,6 +214,23 @@ public interface Huobi {
       throws IOException;
 
   @GET
+  @Path("v1/order/openOrders")
+  HuobiOrdersResult getOpenOrders(
+          @QueryParam("account-id") String accountId,
+          @QueryParam("symbol") String symbol,
+          @QueryParam("side") String side,
+          @QueryParam("types") String types,
+          @QueryParam("from") String from,
+          @QueryParam("direct") String direct,
+          @QueryParam("size") Integer size,
+          @QueryParam("AccessKeyId") String apiKey,
+          @QueryParam("SignatureMethod") String signatureMethod,
+          @QueryParam("SignatureVersion") int signatureVersion,
+          @QueryParam("Timestamp") String nonce,
+          @QueryParam("Signature") ParamsDigest signature)
+          throws IOException;
+
+  @GET
   @Path("v1/order/orders")
   HuobiOrdersResult getOrders(
       @QueryParam("symbol") String symbol,
@@ -307,4 +325,46 @@ public interface Huobi {
       @QueryParam("Timestamp") String nonce,
       @QueryParam("Signature") ParamsDigest signature)
       throws IOException;
+
+  @POST
+  @Path("v1/account/transfer")
+  @Consumes(MediaType.APPLICATION_JSON)
+  HuobiResultV3<HuobiTransferResult> accountTransfer(
+          HuobiAccountTransferRequest body,
+          @QueryParam("AccessKeyId") String apiKey,
+          @QueryParam("SignatureMethod") String signatureMethod,
+          @QueryParam("SignatureVersion") int signatureVersion,
+          @QueryParam("Timestamp") String nonce,
+          @QueryParam("Signature") ParamsDigest signature)
+          throws IOException;
+
+  @POST
+  @Path("v1/futures/transfer")
+  @Consumes(MediaType.APPLICATION_JSON)
+  HuobiResultV3<Long> futuresTransfer(
+          @QueryParam("currency") String currency,
+          @QueryParam("amount") BigDecimal amount,
+          @QueryParam("type") String type,
+          @QueryParam("AccessKeyId") String apiKey,
+          @QueryParam("SignatureMethod") String signatureMethod,
+          @QueryParam("SignatureVersion") int signatureVersion,
+          @QueryParam("Timestamp") String nonce,
+          @QueryParam("Signature") ParamsDigest signature)
+          throws IOException;
+
+  @POST
+  @Path("v2/account/transfer")
+  @Consumes(MediaType.APPLICATION_JSON)
+  HuobiResultV3<HuobiTransferResult> accountTransferV2(
+          @QueryParam("from") String from,
+          @QueryParam("to") String to,
+          @QueryParam("currency") String currency,
+          @QueryParam("amount") BigDecimal amount,
+          @QueryParam("margin-account") String marginAccount,
+          @QueryParam("AccessKeyId") String apiKey,
+          @QueryParam("SignatureMethod") String signatureMethod,
+          @QueryParam("SignatureVersion") int signatureVersion,
+          @QueryParam("Timestamp") String nonce,
+          @QueryParam("Signature") ParamsDigest signature)
+          throws IOException;
 }

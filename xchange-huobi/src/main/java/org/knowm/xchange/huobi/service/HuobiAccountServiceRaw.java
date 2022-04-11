@@ -3,26 +3,11 @@ package org.knowm.xchange.huobi.service;
 import java.io.IOException;
 import java.math.BigDecimal;
 import org.knowm.xchange.Exchange;
+import org.knowm.xchange.huobi.HuobiDigest;
 import org.knowm.xchange.huobi.HuobiUtils;
-import org.knowm.xchange.huobi.dto.account.HuobiAccount;
-import org.knowm.xchange.huobi.dto.account.HuobiBalance;
-import org.knowm.xchange.huobi.dto.account.HuobiCreateWithdrawRequest;
-import org.knowm.xchange.huobi.dto.account.HuobiDepositAddress;
-import org.knowm.xchange.huobi.dto.account.HuobiDepositAddressWithTag;
-import org.knowm.xchange.huobi.dto.account.HuobiFeeRate;
-import org.knowm.xchange.huobi.dto.account.HuobiFundingRecord;
-import org.knowm.xchange.huobi.dto.account.HuobiTransactFeeRate;
-import org.knowm.xchange.huobi.dto.account.HuobiWithdrawFeeRange;
-import org.knowm.xchange.huobi.dto.account.results.HuobiAccountResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiBalanceResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiCreateWithdrawResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiDepositAddressResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiDepositAddressV2Result;
-import org.knowm.xchange.huobi.dto.account.results.HuobiDepositAddressWithTagResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiFeeRateResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiFundingHistoryResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiTransactFeeRateResult;
-import org.knowm.xchange.huobi.dto.account.results.HuobiWithdrawFeeRangeResult;
+import org.knowm.xchange.huobi.dto.HuobiResultV3;
+import org.knowm.xchange.huobi.dto.account.*;
+import org.knowm.xchange.huobi.dto.account.results.*;
 
 public class HuobiAccountServiceRaw extends HuobiBaseService {
   private HuobiAccount[] accountCache = null;
@@ -161,4 +146,48 @@ public class HuobiAccountServiceRaw extends HuobiBaseService {
             signatureCreator);
     return checkResult(createWithdrawResult);
   }
+
+    public HuobiTransferResult accountTransfer() throws IOException {
+        HuobiAccountTransferRequest request = HuobiAccountTransferRequest.builder().build();
+        HuobiResultV3<HuobiTransferResult> result = huobi.accountTransfer(request,
+                exchange.getExchangeSpecification().getApiKey(),
+                HuobiDigest.HMAC_SHA_256,
+                2,
+                HuobiUtils.createUTCDate(exchange.getNonceFactory()),
+                signatureCreator);
+        return checkResult(result);
+  }
+
+    public Long futuresTransfer(String currency, BigDecimal amount, String type) throws IOException {
+        HuobiResultV3<Long> result = huobi.futuresTransfer(
+                currency,
+                amount,
+                type,
+                exchange.getExchangeSpecification().getApiKey(),
+                HuobiDigest.HMAC_SHA_256,
+                2,
+                HuobiUtils.createUTCDate(exchange.getNonceFactory()),
+                signatureCreator);
+        return checkResult(result);
+    }
+
+    public HuobiTransferResult accountTransferV2(String from,
+                                                 String to,
+                                                 String currency,
+                                                 BigDecimal amount,
+                                                 String marginAccount) throws IOException {
+        HuobiResultV3<HuobiTransferResult> result = huobi.accountTransferV2(
+                from,
+                to,
+                currency,
+                amount,
+                marginAccount,
+                exchange.getExchangeSpecification().getApiKey(),
+                HuobiDigest.HMAC_SHA_256,
+                2,
+                HuobiUtils.createUTCDate(exchange.getNonceFactory()),
+                signatureCreator);
+        return checkResult(result);
+    }
+
 }

@@ -12,6 +12,7 @@ import org.knowm.xchange.dto.Order.OrderType;
 import org.knowm.xchange.dto.trade.LimitOrder;
 import org.knowm.xchange.dto.trade.MarketOrder;
 import org.knowm.xchange.exceptions.ExchangeException;
+import org.knowm.xchange.huobi.HuobiDigest;
 import org.knowm.xchange.huobi.HuobiUtils;
 import org.knowm.xchange.huobi.dto.trade.HuobiCreateOrderRequest;
 import org.knowm.xchange.huobi.dto.trade.HuobiMatchResult;
@@ -81,6 +82,31 @@ public class HuobiTradeServiceRaw extends HuobiBaseService {
             2,
             HuobiUtils.createUTCDate(exchange.getNonceFactory()),
             signatureCreator);
+    return checkResult(result);
+  }
+
+
+  public HuobiOrder[] getHuobiOpenOrders(String accountId,
+                                         String symbol,
+                                         String side,
+                                         String types,
+                                         String from,
+                                         String direct,
+                                         Integer size) throws IOException {
+    HuobiOrdersResult result =
+            huobi.getOpenOrders(
+                    accountId,
+                    symbol,
+                    side,
+                    types,
+                    from,
+                    direct,
+                    size,
+                    exchange.getExchangeSpecification().getApiKey(),
+                    HuobiDigest.HMAC_SHA_256,
+                    2,
+                    HuobiUtils.createUTCDate(exchange.getNonceFactory()),
+                    signatureCreator);
     return checkResult(result);
   }
 

@@ -10,6 +10,7 @@ import org.knowm.xchange.dto.Order.IOrderFlags;
 import org.knowm.xchange.dto.trade.*;
 import org.knowm.xchange.huobi.HuobiAdapters;
 import org.knowm.xchange.huobi.dto.trade.HuobiOrder;
+import org.knowm.xchange.huobi.dto.trade.HuobiTradeHistoryParams;
 import org.knowm.xchange.service.trade.TradeService;
 import org.knowm.xchange.service.trade.params.CancelOrderByIdParams;
 import org.knowm.xchange.service.trade.params.CancelOrderParams;

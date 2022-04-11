@@ -13,15 +13,7 @@ import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.BinanceAuthenticated;
 import org.knowm.xchange.binance.BinanceExchange;
 import org.knowm.xchange.binance.dto.BinanceException;
-import org.knowm.xchange.binance.dto.trade.BinanceCancelledOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceDustLog;
-import org.knowm.xchange.binance.dto.trade.BinanceListenKey;
-import org.knowm.xchange.binance.dto.trade.BinanceNewOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceTrade;
-import org.knowm.xchange.binance.dto.trade.OrderSide;
-import org.knowm.xchange.binance.dto.trade.OrderType;
-import org.knowm.xchange.binance.dto.trade.TimeInForce;
+import org.knowm.xchange.binance.dto.trade.*;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.exceptions.ExchangeException;
@@ -259,6 +251,98 @@ public class BinanceTradeServiceRaw extends BinanceBaseService {
     decorateApiCall(() -> binance.closeUserDataStream(apiKey, listenKey))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();
+  }
+
+  public BinanceNewOrder newMarginOrder(
+          String symbol,
+          String isIsolated,
+          OrderSide side,
+          OrderType type,
+          BigDecimal quantity,
+          BigDecimal quoteOrderQty,
+          BigDecimal price,
+          BigDecimal stopPrice,
+          String newClientOrderId,
+          BigDecimal icebergQty,
+          BinanceNewOrder.NewOrderResponseType newOrderRespType,
+          String sideEffectType,
+          TimeInForce timeInForce)
+          throws IOException, BinanceException {
+    return decorateApiCall(
+            () -> binance.newMarginOrder(
+                    symbol,
+                    isIsolated,
+                    side,
+                    type,
+                    quantity,
+                    quoteOrderQty,
+                    price,
+                    stopPrice,
+                    newClientOrderId,
+                    icebergQty,
+                    newOrderRespType,
+                    sideEffectType,
+                    timeInForce,
+                    getRecvWindow(),
+                    getTimestampFactory(),
+                    apiKey,
+                    signatureCreator))
+            .withRetry(retry("newMarginOrder", NON_IDEMPOTENT_CALLS_RETRY_CONFIG_NAME))
+            .withRateLimiter(rateLimiter(ORDERS_PER_SECOND_RATE_LIMITER))
+            .withRateLimiter(rateLimiter(ORDERS_PER_DAY_RATE_LIMITER))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
+  }
+
+  public BinanceCancelledOrder cancelMarginOrder(
+          String symbol, String isIsolated, Long orderId, String origClientOrderId, String newClientOrderId)
+          throws IOException, BinanceException {
+    return decorateApiCall(
+            () -> binance.cancelMarginOrder(
+                    symbol,
+                    isIsolated,
+                    orderId,
+                    origClientOrderId,
+                    newClientOrderId,
+                    getRecvWindow(),
+                    getTimestampFactory(),
+                    super.apiKey,
+                    super.signatureCreator))
+            .withRetry(retry("cancelMarginOrder"))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
+  }
+
+  public BinanceOrder marginOrderDetail(String symbol, String isIsolated, Long orderId, String origClientOrderId)
+          throws IOException, BinanceException {
+    return decorateApiCall(
+            () -> binance.marginOrderDetail(
+                            symbol,
+                            isIsolated,
+                            orderId,
+                            origClientOrderId,
+                            getRecvWindow(),
+                            getTimestampFactory(),
+                            super.apiKey,
+                            super.signatureCreator))
+            .withRetry(retry("marginOrderDetail"))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
+  }
+
+  public List<BinanceOrder> marginOpenOrders(String symbol, String isIsolated)
+          throws IOException, BinanceException {
+    return decorateApiCall(
+            () -> binance.marginOpenOrders(
+                            symbol,
+                            isIsolated,
+                            getRecvWindow(),
+                            getTimestampFactory(),
+                            super.apiKey,
+                            super.signatureCreator))
+            .withRetry(retry("marginOpenOrders"))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
   }
 
   protected int openOrdersPermits(CurrencyPair pair) {

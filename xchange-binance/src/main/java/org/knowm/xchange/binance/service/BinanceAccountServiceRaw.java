@@ -11,15 +11,7 @@ import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.BinanceAuthenticated;
 import org.knowm.xchange.binance.BinanceExchange;
 import org.knowm.xchange.binance.dto.BinanceException;
-import org.knowm.xchange.binance.dto.account.AssetDetail;
-import org.knowm.xchange.binance.dto.account.AssetDividendResponse;
-import org.knowm.xchange.binance.dto.account.BinanceAccountInformation;
-import org.knowm.xchange.binance.dto.account.BinanceDeposit;
-import org.knowm.xchange.binance.dto.account.BinanceWithdraw;
-import org.knowm.xchange.binance.dto.account.DepositAddress;
-import org.knowm.xchange.binance.dto.account.TransferHistory;
-import org.knowm.xchange.binance.dto.account.TransferSubUserHistory;
-import org.knowm.xchange.binance.dto.account.WithdrawResponse;
+import org.knowm.xchange.binance.dto.account.*;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.Currency;
 
@@ -194,5 +186,93 @@ public class BinanceAccountServiceRaw extends BinanceBaseService {
         .withRetry(retry("transferSubUserHistory"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();
+  }
+
+  public String assetTransfer(String type, String asset, BigDecimal amount, String fromSymbol,
+                              String toSymbol) throws BinanceException, IOException {
+    return decorateApiCall(
+            () -> binance.assetTransfer(
+                    type,
+                    asset,
+                    amount,
+                    fromSymbol,
+                    toSymbol,
+                    getRecvWindow(),
+                    getTimestampFactory(),
+                    super.apiKey,
+                    super.signatureCreator))
+            .withRetry(retry("assetTransfer"))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
+  }
+
+  public AssetTransferResponse getAssetTransfer(String type, Long startTime, Long endTime,
+                                                Integer current, Integer size, String fromSymbol,
+                                                String toSymbol) throws BinanceException, IOException {
+    return decorateApiCall(
+            () -> binance.getAssetTransfer(
+                    type,
+                    startTime,
+                    endTime,
+                    current,
+                    size,
+                    fromSymbol,
+                    toSymbol,
+                    getRecvWindow(),
+                    getTimestampFactory(),
+                    super.apiKey,
+                    super.signatureCreator))
+            .withRetry(retry("getAssetTransfer"))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
+  }
+
+  public List<FundingAsset> getFundingAsset(String asset, String needBtcValuation) throws BinanceException, IOException {
+    return decorateApiCall(
+            () -> binance.getFundingAsset(
+                    asset,
+                    needBtcValuation,
+                    getRecvWindow(),
+                    getTimestampFactory(),
+                    super.apiKey,
+                    super.signatureCreator))
+            .withRetry(retry("getFundingAsset"))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
+  }
+
+  public String marginTransfer(String asset, BigDecimal amount, Integer type) throws BinanceException, IOException {
+    return decorateApiCall(
+            () -> binance.marginTransfer(
+                    asset,
+                    amount,
+                    type,
+                    getRecvWindow(),
+                    getTimestampFactory(),
+                    super.apiKey,
+                    super.signatureCreator))
+            .withRetry(retry("marginTransfer"))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
+  }
+
+  public MarginTransferResponse getMarginTransfer(String asset, String type, Long startTime, Long endTime,
+                                               Integer current, Integer size, String archived) throws BinanceException, IOException {
+    return decorateApiCall(
+            () -> binance.getMarginTransfer(
+                    asset,
+                    type,
+                    startTime,
+                    endTime,
+                    current,
+                    size,
+                    archived,
+                    getRecvWindow(),
+                    getTimestampFactory(),
+                    super.apiKey,
+                    super.signatureCreator))
+            .withRetry(retry("getMarginTransfer"))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
   }
 }

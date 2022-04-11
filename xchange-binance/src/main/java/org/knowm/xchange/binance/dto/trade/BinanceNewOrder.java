@@ -20,10 +20,14 @@ public final class BinanceNewOrder {
   public final BigDecimal price;
   public final BigDecimal origQty;
   public final BigDecimal executedQty;
+  public final BigDecimal cummulativeQuoteQty;
   public final OrderStatus status;
   public final TimeInForce timeInForce;
   public final OrderType type;
   public final OrderSide side;
+  public final Boolean isIsolated;
+  public final Integer marginBuyBorrowAmount;
+  public final String marginBuyBorrowAsset;
   public final List<BinanceTrade> fills;
 
   public BinanceNewOrder(
@@ -34,10 +38,14 @@ public final class BinanceNewOrder {
       @JsonProperty("price") BigDecimal price,
       @JsonProperty("origQty") BigDecimal origQty,
       @JsonProperty("executedQty") BigDecimal executedQty,
+      @JsonProperty("cummulativeQuoteQty") BigDecimal cummulativeQuoteQty,
       @JsonProperty("status") OrderStatus status,
       @JsonProperty("timeInForce") TimeInForce timeInForce,
       @JsonProperty("type") OrderType type,
       @JsonProperty("side") OrderSide side,
+      @JsonProperty("isIsolated") Boolean isIsolated,
+      @JsonProperty("marginBuyBorrowAmount") Integer marginBuyBorrowAmount,
+      @JsonProperty("marginBuyBorrowAsset") String marginBuyBorrowAsset,
       @JsonProperty("fills") List<BinanceTrade> fills) {
     super();
     this.symbol = symbol;
@@ -52,5 +60,9 @@ public final class BinanceNewOrder {
     this.type = type;
     this.side = side;
     this.fills = fills;
+    this.cummulativeQuoteQty = cummulativeQuoteQty;
+    this.isIsolated = isIsolated;
+    this.marginBuyBorrowAmount = marginBuyBorrowAmount;
+    this.marginBuyBorrowAsset = marginBuyBorrowAsset;
   }
 }

@@ -1,4 +1,4 @@
-package org.knowm.xchange.huobi.service;
+package org.knowm.xchange.huobi;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -23,7 +23,7 @@ public class HuobiDigest extends BaseParamsDigest {
     super(secretKey, HMAC_SHA_256);
   }
 
-  static HuobiDigest createInstance(String secretKey) {
+  public static HuobiDigest createInstance(String secretKey) {
     return secretKey == null ? null : new HuobiDigest(secretKey);
   }
 

@@ -1,17 +1,14 @@
 package org.knowm.xchange.huobi.service;
 
 import java.io.IOException;
+import java.util.List;
+
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.currency.CurrencyPair;
+import org.knowm.xchange.huobi.HuobiDigest;
 import org.knowm.xchange.huobi.HuobiUtils;
-import org.knowm.xchange.huobi.dto.marketdata.HuobiAllTicker;
-import org.knowm.xchange.huobi.dto.marketdata.HuobiAssetPair;
-import org.knowm.xchange.huobi.dto.marketdata.HuobiCurrencyWrapper;
-import org.knowm.xchange.huobi.dto.marketdata.HuobiDepth;
-import org.knowm.xchange.huobi.dto.marketdata.HuobiKline;
-import org.knowm.xchange.huobi.dto.marketdata.HuobiTicker;
-import org.knowm.xchange.huobi.dto.marketdata.HuobiTradeWrapper;
-import org.knowm.xchange.huobi.dto.marketdata.KlineInterval;
+import org.knowm.xchange.huobi.dto.HuobiResultV3;
+import org.knowm.xchange.huobi.dto.marketdata.*;
 import org.knowm.xchange.huobi.dto.marketdata.results.HuobiAllTickersResult;
 import org.knowm.xchange.huobi.dto.marketdata.results.HuobiAssetPairsResult;
 import org.knowm.xchange.huobi.dto.marketdata.results.HuobiCurrenciesResult;
@@ -39,6 +36,11 @@ public class HuobiMarketDataServiceRaw extends HuobiBaseService {
   public HuobiAssetPair[] getHuobiAssetPairs() throws IOException {
     HuobiAssetPairsResult assetPairsResult = huobi.getAssetPairs();
     return checkResult(assetPairsResult);
+  }
+
+  public List<HuobiSymbolInfo> getCommonSymbols(Long ts) throws IOException {
+    HuobiResultV3<List<HuobiSymbolInfo>> result = huobi.getCommonSymbols(ts);
+    return checkResult(result);
   }
 
   public HuobiDepth getHuobiDepth(CurrencyPair currencyPair, String depthType) throws IOException {

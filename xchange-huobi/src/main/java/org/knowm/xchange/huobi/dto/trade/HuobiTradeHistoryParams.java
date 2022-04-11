@@ -1,4 +1,4 @@
-package org.knowm.xchange.huobi.service;
+package org.knowm.xchange.huobi.dto.trade;
 
 import java.util.Date;
 import org.knowm.xchange.currency.CurrencyPair;

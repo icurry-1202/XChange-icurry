@@ -1,4 +1,4 @@
-package org.knowm.xchange.huobi.service;
+package org.knowm.xchange.huobi.dto.account;
 
 import org.knowm.xchange.currency.Currency;
 import org.knowm.xchange.dto.account.FundingRecord.Type;

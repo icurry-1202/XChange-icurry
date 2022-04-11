@@ -16,24 +16,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import org.knowm.xchange.binance.dto.BinanceException;
-import org.knowm.xchange.binance.dto.account.AssetDetail;
-import org.knowm.xchange.binance.dto.account.AssetDividendResponse;
-import org.knowm.xchange.binance.dto.account.BinanceAccountInformation;
-import org.knowm.xchange.binance.dto.account.BinanceDeposit;
-import org.knowm.xchange.binance.dto.account.BinanceWithdraw;
-import org.knowm.xchange.binance.dto.account.DepositAddress;
-import org.knowm.xchange.binance.dto.account.TransferHistory;
-import org.knowm.xchange.binance.dto.account.TransferSubUserHistory;
-import org.knowm.xchange.binance.dto.account.WithdrawResponse;
-import org.knowm.xchange.binance.dto.trade.BinanceCancelledOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceDustLog;
-import org.knowm.xchange.binance.dto.trade.BinanceListenKey;
-import org.knowm.xchange.binance.dto.trade.BinanceNewOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceOrder;
-import org.knowm.xchange.binance.dto.trade.BinanceTrade;
-import org.knowm.xchange.binance.dto.trade.OrderSide;
-import org.knowm.xchange.binance.dto.trade.OrderType;
-import org.knowm.xchange.binance.dto.trade.TimeInForce;
+import org.knowm.xchange.binance.dto.account.*;
+import org.knowm.xchange.binance.dto.trade.*;
 import si.mazi.rescu.ParamsDigest;
 import si.mazi.rescu.SynchronizedValueFactory;
 
@@ -543,4 +527,133 @@ public interface BinanceAuthenticated extends Binance {
   Map<?, ?> closeUserDataStream(
       @HeaderParam(X_MBX_APIKEY) String apiKey, @PathParam("listenKey") String listenKey)
       throws IOException, BinanceException;
+
+  @POST
+  @Path("/sapi/v1/asset/transfer")
+  String assetTransfer(
+          @FormParam("type") String type,
+          @FormParam("asset") String asset,
+          @FormParam("amount") BigDecimal amount,
+          @FormParam("fromSymbol") String fromSymbol,
+          @FormParam("toSymbol") String toSymbol,
+          @FormParam("recvWindow") Long recvWindow,
+          @FormParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+          @HeaderParam(X_MBX_APIKEY) String apiKey,
+          @QueryParam(SIGNATURE) ParamsDigest signature)
+          throws IOException, BinanceException;
+
+  @GET
+  @Path("/sapi/v1/asset/transfer")
+  AssetTransferResponse getAssetTransfer(
+          @QueryParam("type") String type,
+          @QueryParam("startTime") Long startTime,
+          @QueryParam("endTime") Long endTime,
+          @QueryParam("current") Integer current,
+          @QueryParam("size") Integer size,
+          @QueryParam("fromSymbol") String fromSymbol,
+          @QueryParam("toSymbol") String toSymbol,
+          @QueryParam("recvWindow") Long recvWindow,
+          @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+          @HeaderParam(X_MBX_APIKEY) String apiKey,
+          @QueryParam(SIGNATURE) ParamsDigest signature)
+          throws IOException, BinanceException;
+
+  @POST
+  @Path("/sapi/v1/asset/get-funding-asset")
+  List<FundingAsset> getFundingAsset(
+          @FormParam("asset") String asset,
+          @FormParam("needBtcValuation") String needBtcValuation,
+          @FormParam("recvWindow") Long recvWindow,
+          @FormParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+          @HeaderParam(X_MBX_APIKEY) String apiKey,
+          @QueryParam(SIGNATURE) ParamsDigest signature)
+          throws IOException, BinanceException;
+
+  @POST
+  @Path("/sapi/v1/margin/transfer")
+  String marginTransfer(
+          @FormParam("asset") String asset,
+          @FormParam("amount") BigDecimal amount,
+          @FormParam("type") Integer type,
+          @FormParam("recvWindow") Long recvWindow,
+          @FormParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+          @HeaderParam(X_MBX_APIKEY) String apiKey,
+          @QueryParam(SIGNATURE) ParamsDigest signature)
+          throws IOException, BinanceException;
+
+  @GET
+  @Path("/sapi/v1/margin/transfer")
+  MarginTransferResponse getMarginTransfer(
+          @QueryParam("asset") String asset,
+          @QueryParam("type") String type,
+          @QueryParam("startTime") Long startTime,
+          @QueryParam("endTime") Long endTime,
+          @QueryParam("current") Integer current,
+          @QueryParam("size") Integer size,
+          @QueryParam("archived") String archived,
+          @QueryParam("recvWindow") Long recvWindow,
+          @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+          @HeaderParam(X_MBX_APIKEY) String apiKey,
+          @QueryParam(SIGNATURE) ParamsDigest signature)
+          throws IOException, BinanceException;
+
+  @POST
+  @Path("/sapi/v1/margin/order")
+  BinanceNewOrder newMarginOrder(
+          @FormParam("symbol") String symbol,
+          @FormParam("isIsolated") String isIsolated,
+          @FormParam("side") OrderSide side,
+          @FormParam("type") OrderType type,
+          @FormParam("quantity") BigDecimal quantity,
+          @FormParam("quoteOrderQty") BigDecimal quoteOrderQty,
+          @FormParam("price") BigDecimal price,
+          @FormParam("stopPrice") BigDecimal stopPrice,
+          @FormParam("newClientOrderId") String newClientOrderId,
+          @FormParam("icebergQty") BigDecimal icebergQty,
+          @FormParam("newOrderRespType") BinanceNewOrder.NewOrderResponseType newOrderRespType,
+          @FormParam("sideEffectType") String sideEffectType,
+          @FormParam("timeInForce") TimeInForce timeInForce,
+          @FormParam("recvWindow") Long recvWindow,
+          @FormParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+          @HeaderParam(X_MBX_APIKEY) String apiKey,
+          @QueryParam(SIGNATURE) ParamsDigest signature)
+          throws IOException, BinanceException;
+
+  @DELETE
+  @Path("/sapi/v1/margin/order")
+  BinanceCancelledOrder cancelMarginOrder(
+          @QueryParam("symbol") String symbol,
+          @QueryParam("isIsolated") String isIsolated,
+          @QueryParam("orderId") Long orderId,
+          @QueryParam("origClientOrderId") String origClientOrderId,
+          @QueryParam("newClientOrderId") String newClientOrderId,
+          @QueryParam("recvWindow") Long recvWindow,
+          @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+          @HeaderParam(X_MBX_APIKEY) String apiKey,
+          @QueryParam(SIGNATURE) ParamsDigest signature)
+          throws IOException, BinanceException;
+
+  @GET
+  @Path("/sapi/v1/margin/order")
+  BinanceOrder marginOrderDetail(
+          @QueryParam("symbol") String symbol,
+          @QueryParam("isIsolated") String isIsolated,
+          @QueryParam("orderId") Long orderId,
+          @QueryParam("origClientOrderId") String origClientOrderId,
+          @QueryParam("recvWindow") Long recvWindow,
+          @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+          @HeaderParam(X_MBX_APIKEY) String apiKey,
+          @QueryParam(SIGNATURE) ParamsDigest signature)
+          throws IOException, BinanceException;
+
+  @GET
+  @Path("/sapi/v1/margin/openOrders")
+  List<BinanceOrder> marginOpenOrders(
+          @QueryParam("symbol") String symbol,
+          @QueryParam("isIsolated") String isIsolated,
+          @QueryParam("recvWindow") Long recvWindow,
+          @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+          @HeaderParam(X_MBX_APIKEY) String apiKey,
+          @QueryParam(SIGNATURE) ParamsDigest signature)
+          throws IOException, BinanceException;
 }

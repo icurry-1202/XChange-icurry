@@ -1,5 +1,6 @@
 package org.knowm.xchange.okex.v5.dto.account;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,7 +9,7 @@ import lombok.NoArgsConstructor;
  * @Date 2022/3/30 17:12
  */
 @Data
-@NoArgsConstructor
+@Builder
 public class OkexAccountLeverage {
     private String instId;
     private String lever;

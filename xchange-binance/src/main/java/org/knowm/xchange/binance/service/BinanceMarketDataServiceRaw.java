@@ -8,13 +8,7 @@ import java.util.stream.Collectors;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.BinanceAuthenticated;
 import org.knowm.xchange.binance.BinanceExchange;
-import org.knowm.xchange.binance.dto.marketdata.BinanceAggTrades;
-import org.knowm.xchange.binance.dto.marketdata.BinanceKline;
-import org.knowm.xchange.binance.dto.marketdata.BinanceOrderbook;
-import org.knowm.xchange.binance.dto.marketdata.BinancePrice;
-import org.knowm.xchange.binance.dto.marketdata.BinancePriceQuantity;
-import org.knowm.xchange.binance.dto.marketdata.BinanceTicker24h;
-import org.knowm.xchange.binance.dto.marketdata.KlineInterval;
+import org.knowm.xchange.binance.dto.marketdata.*;
 import org.knowm.xchange.binance.dto.meta.BinanceTime;
 import org.knowm.xchange.client.ResilienceRegistries;
 import org.knowm.xchange.currency.CurrencyPair;
@@ -102,9 +96,10 @@ public class BinanceMarketDataServiceRaw extends BinanceBaseService {
   }
 
   public BinancePrice tickerPrice(CurrencyPair pair) throws IOException {
-    return tickerAllPrices().stream()
-        .filter(p -> p.getCurrencyPair().equals(pair))
-        .collect(StreamUtils.singletonCollector());
+    return decorateApiCall(() -> binance.tickerPrice(BinanceAdapters.toSymbol(pair)))
+            .withRetry(retry("tickerPrices"))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
   }
 
   public List<BinancePrice> tickerAllPrices() throws IOException {
@@ -120,6 +115,14 @@ public class BinanceMarketDataServiceRaw extends BinanceBaseService {
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();
   }
+
+  public List<BinanceTradeInfo> getTrades(String symbol, Integer limit) throws IOException {
+    return decorateApiCall(() -> binance.getTrades(symbol, limit))
+            .withRetry(retry("getTrades"))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
+  }
+
 
   protected int depthPermits(Integer limit) {
     if (limit == null || limit <= 100) {

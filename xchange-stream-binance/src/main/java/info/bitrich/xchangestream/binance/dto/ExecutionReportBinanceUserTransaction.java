@@ -216,7 +216,10 @@ public class ExecutionReportBinanceUserTransaction extends ProductBinanceWebSock
             side,
             stopPrice,
             BigDecimal.ZERO,
-            timestamp));
+            timestamp,
+            null,
+            null,
+            null));
   }
 
   @Override

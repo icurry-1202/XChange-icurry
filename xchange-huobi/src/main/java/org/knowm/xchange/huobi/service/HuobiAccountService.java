@@ -12,6 +12,7 @@ import org.knowm.xchange.exceptions.ExchangeException;
 import org.knowm.xchange.huobi.HuobiAdapters;
 import org.knowm.xchange.huobi.dto.account.HuobiAccount;
 import org.knowm.xchange.huobi.dto.account.HuobiDepositAddress;
+import org.knowm.xchange.huobi.dto.account.HuobiFundingHistoryParams;
 import org.knowm.xchange.service.account.AccountService;
 import org.knowm.xchange.service.trade.params.DefaultWithdrawFundsParams;
 import org.knowm.xchange.service.trade.params.HistoryParamsFundingType;
