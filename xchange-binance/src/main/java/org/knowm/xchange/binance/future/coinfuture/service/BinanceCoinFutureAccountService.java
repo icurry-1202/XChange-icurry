@@ -1,18 +1,18 @@
 package org.knowm.xchange.binance.future.coinfuture.service;
 
-import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.account.*;
+import org.knowm.xchange.binance.dto.trade.MarginType;
+import org.knowm.xchange.binance.dto.trade.SetLeverageResult;
 import org.knowm.xchange.binance.future.coinfuture.BinanceCoinFutureAuthenticated;
 import org.knowm.xchange.binance.future.coinfuture.BinanceCoinFutureExchange;
 import org.knowm.xchange.client.ResilienceRegistries;
-import org.knowm.xchange.currency.CurrencyPair;
 import org.knowm.xchange.service.account.AccountService;
 
 import java.io.IOException;
 import java.util.List;
 
-import static org.knowm.xchange.binance.BinanceResilience.REQUEST_WEIGHT_RATE_LIMITER;
+import static org.knowm.xchange.binance.BinanceResilience.*;
 import static org.knowm.xchange.client.ResilienceRegistries.NON_IDEMPOTENT_CALLS_RETRY_CONFIG_NAME;
 
 public class BinanceCoinFutureAccountService extends BinanceCoinFutureBaseService implements AccountService {
@@ -92,16 +92,51 @@ public class BinanceCoinFutureAccountService extends BinanceCoinFutureBaseServic
                 .call();
     }
 
-    public BinanceFutureCommissionRate getCommissionRate(CurrencyPair pair)
+    public BinanceFutureCommissionRate getCommissionRate(String symbol)
             throws IOException, BinanceException {
         return decorateApiCall(
                 () -> binance.getCommissionRate(
-                        BinanceAdapters.toSymbol(pair),
+                        symbol,
                         getRecvWindow(),
                         getTimestampFactory(),
                         apiKey,
                         signatureCreator))
                 .withRetry(retry("coinFutureGetCommissionRate", NON_IDEMPOTENT_CALLS_RETRY_CONFIG_NAME))
+                .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+                .call();
+    }
+
+    public SetLeverageResult setLeverage(String symbol, Integer leverage)
+            throws IOException, BinanceException {
+        return decorateApiCall(
+                () -> binance.setLeverage(
+                        symbol,
+                        leverage,
+                        getRecvWindow(),
+                        getTimestampFactory(),
+                        apiKey,
+                        signatureCreator))
+                .withRetry(retry("coinFutureSetLeverage", NON_IDEMPOTENT_CALLS_RETRY_CONFIG_NAME))
+                .withRateLimiter(rateLimiter(ORDERS_PER_SECOND_RATE_LIMITER))
+                .withRateLimiter(rateLimiter(ORDERS_PER_DAY_RATE_LIMITER))
+                .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+                .call();
+    }
+
+    public String setMarginType(String symbol, MarginType marginType)
+            throws IOException, BinanceException {
+        return decorateApiCall(
+                () ->
+                        binance.setMarginType(
+                                symbol,
+                                marginType,
+                                getRecvWindow(),
+                                getTimestampFactory(),
+                                super.apiKey,
+                                super.signatureCreator))
+                .withRetry(retry("coinFutureSetMarginType"))
+                .withRateLimiter(rateLimiter(ORDERS_PER_SECOND_RATE_LIMITER))
+                .withRateLimiter(rateLimiter(ORDERS_PER_DAY_RATE_LIMITER))
                 .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
                 .call();
     }

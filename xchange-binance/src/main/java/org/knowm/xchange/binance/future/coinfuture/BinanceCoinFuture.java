@@ -1,10 +1,7 @@
 package org.knowm.xchange.binance.future.coinfuture;
 
 import org.knowm.xchange.binance.dto.BinanceException;
-import org.knowm.xchange.binance.dto.marketdata.BinanceFutureExchangeInfo;
-import org.knowm.xchange.binance.dto.marketdata.BinanceFutureFundingRate;
-import org.knowm.xchange.binance.dto.marketdata.BinanceFuturePremiumIndex;
-import org.knowm.xchange.binance.dto.marketdata.BinanceFutureTradeInfo;
+import org.knowm.xchange.binance.dto.marketdata.*;
 import org.knowm.xchange.binance.dto.meta.BinanceTime;
 
 import javax.ws.rs.GET;
@@ -47,6 +44,10 @@ public interface BinanceCoinFuture {
     @GET
     @Path("dapi/v1/exchangeInfo")
     BinanceFutureExchangeInfo getExchangeInfo() throws IOException;
+
+    @GET
+    @Path("fapi/v1/ticker/price")
+    List<BinancePrice> tickerPrice(@QueryParam("symbol") String symbol) throws IOException;
 
     @GET
     @Path("dapi/v1/historicalTrades")

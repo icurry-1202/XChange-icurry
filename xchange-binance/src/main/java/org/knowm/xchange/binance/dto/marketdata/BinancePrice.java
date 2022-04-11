@@ -9,22 +9,28 @@ import org.knowm.xchange.utils.jackson.CurrencyPairDeserializer;
 public final class BinancePrice implements Comparable<BinancePrice> {
 
   private final CurrencyPair pair;
+  private final String symbol;
   private final BigDecimal price;
 
   public BinancePrice(
       @JsonProperty("symbol") String symbol, @JsonProperty("price") BigDecimal price) {
-    this(CurrencyPairDeserializer.getCurrencyPairFromString(symbol), price);
+    this(CurrencyPairDeserializer.getCurrencyPairFromString(symbol), symbol, price);
   }
 
-  public BinancePrice(CurrencyPair pair, BigDecimal price) {
+  public BinancePrice(CurrencyPair pair, String symbol, BigDecimal price) {
     Assert.notNull(price, "Null price");
     Assert.notNull(pair, "Null pair");
     this.pair = pair;
+    this.symbol = symbol;
     this.price = price;
   }
 
   public CurrencyPair getCurrencyPair() {
     return pair;
+  }
+
+  public String getSymbol() {
+    return symbol;
   }
 
   public BigDecimal getPrice() {

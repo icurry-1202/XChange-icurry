@@ -134,40 +134,6 @@ public class BinanceUsdFutureTradeService extends BinanceUsdFutureBaseService im
                 .call();
     }
 
-    public SetLeverageResult setLeverage(String symbol, Integer leverage)
-            throws IOException, BinanceException {
-        return decorateApiCall(
-                () -> binance.setLeverage(
-                        symbol,
-                        leverage,
-                        getRecvWindow(),
-                        getTimestampFactory(),
-                        apiKey,
-                        signatureCreator))
-                .withRetry(retry("usdFutureSetLeverage", NON_IDEMPOTENT_CALLS_RETRY_CONFIG_NAME))
-                .withRateLimiter(rateLimiter(ORDERS_PER_SECOND_RATE_LIMITER))
-                .withRateLimiter(rateLimiter(ORDERS_PER_DAY_RATE_LIMITER))
-                .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
-                .call();
-    }
-
-    public String setMarginType(String symbol, MarginType marginType)
-            throws IOException, BinanceException {
-        return decorateApiCall(
-                () -> binance.setMarginType(
-                        symbol,
-                        marginType,
-                        getRecvWindow(),
-                        getTimestampFactory(),
-                        super.apiKey,
-                        super.signatureCreator))
-                .withRetry(retry("usdFutureSetMarginType"))
-                .withRateLimiter(rateLimiter(ORDERS_PER_SECOND_RATE_LIMITER))
-                .withRateLimiter(rateLimiter(ORDERS_PER_DAY_RATE_LIMITER))
-                .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
-                .call();
-    }
-
     protected int openOrdersPermits(CurrencyPair pair) {
         return pair != null ? 1 : 40;
     }
