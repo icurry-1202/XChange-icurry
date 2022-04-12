@@ -656,4 +656,16 @@ public interface BinanceAuthenticated extends Binance {
           @HeaderParam(X_MBX_APIKEY) String apiKey,
           @QueryParam(SIGNATURE) ParamsDigest signature)
           throws IOException, BinanceException;
+
+  @GET
+  @Path("/sapi/v1/asset/tradeFee")
+  List<BinanceTradeFee> getAssetTradeFee(
+          @QueryParam("symbol") String symbol,
+          @QueryParam("recvWindow") Long recvWindow,
+          @QueryParam("timestamp") SynchronizedValueFactory<Long> timestamp,
+          @HeaderParam(X_MBX_APIKEY) String apiKey,
+          @QueryParam(SIGNATURE) ParamsDigest signature)
+          throws IOException, BinanceException;
+
+
 }

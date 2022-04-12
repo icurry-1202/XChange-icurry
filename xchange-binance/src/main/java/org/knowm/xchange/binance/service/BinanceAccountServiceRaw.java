@@ -275,4 +275,17 @@ public class BinanceAccountServiceRaw extends BinanceBaseService {
             .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
             .call();
   }
+
+  public List<BinanceTradeFee> getAssetTradeFee(String symbol) throws BinanceException, IOException {
+    return decorateApiCall(
+            () -> binance.getAssetTradeFee(
+                    symbol,
+                    getRecvWindow(),
+                    getTimestampFactory(),
+                    super.apiKey,
+                    super.signatureCreator))
+            .withRetry(retry("getAssetTradeFee"))
+            .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+            .call();
+  }
 }
