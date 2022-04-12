@@ -54,7 +54,7 @@ public interface Binance {
    */
   @GET
   @Path("api/v3/exchangeInfo")
-  BinanceExchangeInfo exchangeInfo() throws IOException;
+  BinanceExchangeInfo exchangeInfo() throws IOException, BinanceException;
 
   /**
    * @param symbol

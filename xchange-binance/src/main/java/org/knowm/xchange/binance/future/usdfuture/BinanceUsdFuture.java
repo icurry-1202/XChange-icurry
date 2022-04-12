@@ -47,18 +47,18 @@ public interface BinanceUsdFuture {
      */
     @GET
     @Path("fapi/v1/exchangeInfo")
-    BinanceExchangeInfo getExchangeInfo() throws IOException;
+    BinanceExchangeInfo getExchangeInfo() throws IOException, BinanceException;
 
     @GET
     @Path("fapi/v1/ticker/price")
-    BinancePrice tickerPrice(@QueryParam("symbol") String symbol) throws IOException;
+    BinancePrice tickerPrice(@QueryParam("symbol") String symbol) throws IOException, BinanceException;
 
     @GET
     @Path("fapi/v1/historicalTrades")
     List<BinanceFutureTradeInfo> getHistoricalTrades(
             @QueryParam("symbol") String symbol,
             @QueryParam("limit") Integer limit,
-            @QueryParam("fromId") Long fromId) throws IOException;
+            @QueryParam("fromId") Long fromId) throws IOException, BinanceException;
 
     @GET
     @Path("fapi/v1/premiumIndex")

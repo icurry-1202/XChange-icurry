@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import org.knowm.xchange.binance.BinanceAdapters;
 import org.knowm.xchange.binance.BinanceAuthenticated;
 import org.knowm.xchange.binance.BinanceExchange;
+import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.marketdata.*;
 import org.knowm.xchange.binance.dto.meta.BinanceTime;
 import org.knowm.xchange.client.ResilienceRegistries;
@@ -35,7 +36,7 @@ public class BinanceMarketDataServiceRaw extends BinanceBaseService {
         .call();
   }
 
-  public BinanceOrderbook getBinanceOrderbook(CurrencyPair pair, Integer limit) throws IOException {
+  public BinanceOrderbook getBinanceOrderbook(CurrencyPair pair, Integer limit) throws IOException, BinanceException {
     return decorateApiCall(() -> binance.depth(BinanceAdapters.toSymbol(pair), limit))
         .withRetry(retry("depth"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), depthPermits(limit))
@@ -44,7 +45,7 @@ public class BinanceMarketDataServiceRaw extends BinanceBaseService {
 
   public List<BinanceAggTrades> aggTrades(
       CurrencyPair pair, Long fromId, Long startTime, Long endTime, Integer limit)
-      throws IOException {
+          throws IOException, BinanceException {
     return decorateApiCall(
             () ->
                 binance.aggTrades(
@@ -54,17 +55,17 @@ public class BinanceMarketDataServiceRaw extends BinanceBaseService {
         .call();
   }
 
-  public BinanceKline lastKline(CurrencyPair pair, KlineInterval interval) throws IOException {
+  public BinanceKline lastKline(CurrencyPair pair, KlineInterval interval) throws IOException, BinanceException {
     return klines(pair, interval, 1, null, null).stream().collect(StreamUtils.singletonCollector());
   }
 
-  public List<BinanceKline> klines(CurrencyPair pair, KlineInterval interval) throws IOException {
+  public List<BinanceKline> klines(CurrencyPair pair, KlineInterval interval) throws IOException, BinanceException {
     return klines(pair, interval, null, null, null);
   }
 
   public List<BinanceKline> klines(
       CurrencyPair pair, KlineInterval interval, Integer limit, Long startTime, Long endTime)
-      throws IOException {
+          throws IOException, BinanceException {
     List<Object[]> raw =
         decorateApiCall(
                 () ->
@@ -78,14 +79,14 @@ public class BinanceMarketDataServiceRaw extends BinanceBaseService {
         .collect(Collectors.toList());
   }
 
-  public List<BinanceTicker24h> ticker24h() throws IOException {
+  public List<BinanceTicker24h> ticker24h() throws IOException, BinanceException {
     return decorateApiCall(() -> binance.ticker24h())
         .withRetry(retry("ticker24h"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER), 40)
         .call();
   }
 
-  public BinanceTicker24h ticker24h(CurrencyPair pair) throws IOException {
+  public BinanceTicker24h ticker24h(CurrencyPair pair) throws IOException, BinanceException {
     BinanceTicker24h ticker24h =
         decorateApiCall(() -> binance.ticker24h(BinanceAdapters.toSymbol(pair)))
             .withRetry(retry("ticker24h"))
@@ -95,28 +96,28 @@ public class BinanceMarketDataServiceRaw extends BinanceBaseService {
     return ticker24h;
   }
 
-  public BinancePrice tickerPrice(CurrencyPair pair) throws IOException {
+  public BinancePrice tickerPrice(CurrencyPair pair) throws IOException, BinanceException {
     return decorateApiCall(() -> binance.tickerPrice(BinanceAdapters.toSymbol(pair)))
             .withRetry(retry("tickerPrices"))
             .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
             .call();
   }
 
-  public List<BinancePrice> tickerAllPrices() throws IOException {
+  public List<BinancePrice> tickerAllPrices() throws IOException, BinanceException {
     return decorateApiCall(() -> binance.tickerAllPrices())
         .withRetry(retry("tickerAllPrices"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();
   }
 
-  public List<BinancePriceQuantity> tickerAllBookTickers() throws IOException {
+  public List<BinancePriceQuantity> tickerAllBookTickers() throws IOException, BinanceException {
     return decorateApiCall(() -> binance.tickerAllBookTickers())
         .withRetry(retry("tickerAllBookTickers"))
         .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
         .call();
   }
 
-  public List<BinanceTradeInfo> getTrades(String symbol, Integer limit) throws IOException {
+  public List<BinanceTradeInfo> getTrades(String symbol, Integer limit) throws IOException, BinanceException {
     return decorateApiCall(() -> binance.getTrades(symbol, limit))
             .withRetry(retry("getTrades"))
             .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))

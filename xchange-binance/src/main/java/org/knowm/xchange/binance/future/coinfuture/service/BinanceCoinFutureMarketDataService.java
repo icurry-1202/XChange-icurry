@@ -1,6 +1,7 @@
 package org.knowm.xchange.binance.future.coinfuture.service;
 
 import org.knowm.xchange.binance.BinanceAdapters;
+import org.knowm.xchange.binance.dto.BinanceException;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFutureFundingRate;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFuturePremiumIndex;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFutureTradeInfo;
@@ -26,21 +27,21 @@ public class BinanceCoinFutureMarketDataService extends BinanceCoinFutureBaseSer
         super(exchange, binance, resilienceRegistries);
     }
 
-    public BinanceExchangeInfo getExchangeInfo() throws IOException {
+    public BinanceExchangeInfo getExchangeInfo() throws IOException, BinanceException {
         return decorateApiCall(binance::getExchangeInfo)
                 .withRetry(retry("coinFutureGetExchangeInfo"))
                 .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
                 .call();
     }
 
-    public BinancePrice tickerPrice(String symbol) throws IOException {
+    public List<BinancePrice> tickerPrice(String symbol) throws IOException, BinanceException {
         return decorateApiCall(() -> binance.tickerPrice(symbol))
                 .withRetry(retry("coinFutureTickerPrice"))
                 .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
                 .call();
     }
 
-    public List<BinanceFutureTradeInfo> getHistoricalTrades(CurrencyPair pair, Integer limit, Long fromId) throws IOException {
+    public List<BinanceFutureTradeInfo> getHistoricalTrades(CurrencyPair pair, Integer limit, Long fromId) throws IOException, BinanceException {
         return decorateApiCall(
                 () -> binance.getHistoricalTrades(
                         BinanceAdapters.toSymbol(pair), limit, fromId))
@@ -49,7 +50,7 @@ public class BinanceCoinFutureMarketDataService extends BinanceCoinFutureBaseSer
                 .call();
     }
 
-    public BinanceFuturePremiumIndex getPremiumIndex(String symbol, String pair) throws IOException {
+    public List<BinanceFuturePremiumIndex> getPremiumIndex(String symbol, String pair) throws IOException, BinanceException {
         return decorateApiCall(
                 () -> binance.getPremiumIndex(symbol, pair))
                 .withRetry(retry("coinFutureGetPremiumIndex"))
@@ -57,7 +58,7 @@ public class BinanceCoinFutureMarketDataService extends BinanceCoinFutureBaseSer
                 .call();
     }
 
-    public List<BinanceFutureFundingRate> getFundingRate(String symbol, Long startTime, Long endTime, Integer limit) throws IOException {
+    public List<BinanceFutureFundingRate> getFundingRate(String symbol, Long startTime, Long endTime, Integer limit) throws IOException, BinanceException {
         return decorateApiCall(
                 () -> binance.getFundingRate(
                         symbol, startTime, endTime, limit))

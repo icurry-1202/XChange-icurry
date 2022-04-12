@@ -51,5 +51,5 @@ public class Symbol {
     private String maIntegerMarginPercent;
     private String requiredMarginPercent;
     private String underlyingType;
-    private Integer settlePlan;
+    private Long settlePlan;
 }

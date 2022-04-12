@@ -47,22 +47,22 @@ public interface BinanceCoinFuture {
      */
     @GET
     @Path("dapi/v1/exchangeInfo")
-    BinanceExchangeInfo getExchangeInfo() throws IOException;
+    BinanceExchangeInfo getExchangeInfo() throws IOException, BinanceException;
 
     @GET
-    @Path("fapi/v1/ticker/price")
-    BinancePrice tickerPrice(@QueryParam("symbol") String symbol) throws IOException;
+    @Path("dapi/v1/ticker/price")
+    List<BinancePrice> tickerPrice(@QueryParam("symbol") String symbol) throws IOException, BinanceException;
 
     @GET
     @Path("dapi/v1/historicalTrades")
     List<BinanceFutureTradeInfo> getHistoricalTrades(
             @QueryParam("symbol") String symbol,
             @QueryParam("limit") Integer limit,
-            @QueryParam("fromId") Long fromId) throws IOException;
+            @QueryParam("fromId") Long fromId) throws IOException, BinanceException;
 
     @GET
     @Path("dapi/v1/premiumIndex")
-    BinanceFuturePremiumIndex getPremiumIndex(
+    List<BinanceFuturePremiumIndex> getPremiumIndex(
             @QueryParam("symbol") String symbol,
             @QueryParam("pair") String pair)
             throws IOException, BinanceException;
