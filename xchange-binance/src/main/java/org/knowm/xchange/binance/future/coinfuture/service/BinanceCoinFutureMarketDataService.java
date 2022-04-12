@@ -1,10 +1,11 @@
 package org.knowm.xchange.binance.future.coinfuture.service;
 
 import org.knowm.xchange.binance.BinanceAdapters;
-import org.knowm.xchange.binance.dto.marketdata.BinanceFutureExchangeInfo;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFutureFundingRate;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFuturePremiumIndex;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFutureTradeInfo;
+import org.knowm.xchange.binance.dto.marketdata.BinancePrice;
+import org.knowm.xchange.binance.dto.meta.exchangeinfo.BinanceExchangeInfo;
 import org.knowm.xchange.binance.future.coinfuture.BinanceCoinFutureAuthenticated;
 import org.knowm.xchange.binance.future.coinfuture.BinanceCoinFutureExchange;
 import org.knowm.xchange.client.ResilienceRegistries;
@@ -25,9 +26,16 @@ public class BinanceCoinFutureMarketDataService extends BinanceCoinFutureBaseSer
         super(exchange, binance, resilienceRegistries);
     }
 
-    public BinanceFutureExchangeInfo getExchangeInfo() throws IOException {
+    public BinanceExchangeInfo getExchangeInfo() throws IOException {
         return decorateApiCall(binance::getExchangeInfo)
                 .withRetry(retry("coinFutureGetExchangeInfo"))
+                .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+                .call();
+    }
+
+    public BinancePrice tickerPrice(String symbol) throws IOException {
+        return decorateApiCall(() -> binance.tickerPrice(symbol))
+                .withRetry(retry("coinFutureTickerPrice"))
                 .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
                 .call();
     }
@@ -41,7 +49,7 @@ public class BinanceCoinFutureMarketDataService extends BinanceCoinFutureBaseSer
                 .call();
     }
 
-    public List<BinanceFuturePremiumIndex> getPremiumIndex(String symbol, String pair) throws IOException {
+    public BinanceFuturePremiumIndex getPremiumIndex(String symbol, String pair) throws IOException {
         return decorateApiCall(
                 () -> binance.getPremiumIndex(symbol, pair))
                 .withRetry(retry("coinFutureGetPremiumIndex"))

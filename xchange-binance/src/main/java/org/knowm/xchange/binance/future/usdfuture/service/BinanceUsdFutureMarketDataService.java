@@ -1,9 +1,10 @@
 package org.knowm.xchange.binance.future.usdfuture.service;
 
 import org.knowm.xchange.binance.dto.marketdata.BinanceFutureFundingRate;
-import org.knowm.xchange.binance.dto.marketdata.BinanceFutureExchangeInfo;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFuturePremiumIndex;
 import org.knowm.xchange.binance.dto.marketdata.BinanceFutureTradeInfo;
+import org.knowm.xchange.binance.dto.marketdata.BinancePrice;
+import org.knowm.xchange.binance.dto.meta.exchangeinfo.BinanceExchangeInfo;
 import org.knowm.xchange.binance.future.usdfuture.BinanceUsdFutureAuthenticated;
 import org.knowm.xchange.binance.future.usdfuture.BinanceUsdFutureExchange;
 import org.knowm.xchange.client.ResilienceRegistries;
@@ -23,9 +24,16 @@ public class BinanceUsdFutureMarketDataService extends BinanceUsdFutureBaseServi
         super(exchange, binance, resilienceRegistries);
     }
 
-    public BinanceFutureExchangeInfo getExchangeInfo() throws IOException {
+    public BinanceExchangeInfo getExchangeInfo() throws IOException {
         return decorateApiCall(binance::getExchangeInfo)
                 .withRetry(retry("usdFutureGetExchangeInfo"))
+                .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
+                .call();
+    }
+
+    public BinancePrice tickerPrice(String symbol) throws IOException {
+        return decorateApiCall(() -> binance.tickerPrice(symbol))
+                .withRetry(retry("usdFutureTickerPrice"))
                 .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
                 .call();
     }
@@ -39,7 +47,7 @@ public class BinanceUsdFutureMarketDataService extends BinanceUsdFutureBaseServi
                 .call();
     }
 
-    public List<BinanceFuturePremiumIndex> getPremiumIndex(String symbol) throws IOException {
+    public BinanceFuturePremiumIndex getPremiumIndex(String symbol) throws IOException {
         return decorateApiCall(
                 () -> binance.getPremiumIndex(symbol))
                 .withRetry(retry("usdFutureGetPremiumIndex"))
