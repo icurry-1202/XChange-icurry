@@ -96,8 +96,8 @@ public class BinanceMarketDataServiceRaw extends BinanceBaseService {
     return ticker24h;
   }
 
-  public BinancePrice tickerPrice(CurrencyPair pair) throws IOException, BinanceException {
-    return decorateApiCall(() -> binance.tickerPrice(BinanceAdapters.toSymbol(pair)))
+  public BinancePrice tickerPrice(String symbol) throws IOException, BinanceException {
+    return decorateApiCall(() -> binance.tickerPrice(symbol))
             .withRetry(retry("tickerPrices"))
             .withRateLimiter(rateLimiter(REQUEST_WEIGHT_RATE_LIMITER))
             .call();

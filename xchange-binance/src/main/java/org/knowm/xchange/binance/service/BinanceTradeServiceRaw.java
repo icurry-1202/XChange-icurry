@@ -46,7 +46,7 @@ public class BinanceTradeServiceRaw extends BinanceBaseService {
   }
 
   public BinanceNewOrder newOrder(
-      CurrencyPair pair,
+      String symbol,
       OrderSide side,
       OrderType type,
       TimeInForce timeInForce,
@@ -60,7 +60,7 @@ public class BinanceTradeServiceRaw extends BinanceBaseService {
     return decorateApiCall(
             () ->
                 binance.newOrder(
-                    BinanceAdapters.toSymbol(pair),
+                    symbol,
                     side,
                     type,
                     timeInForce,

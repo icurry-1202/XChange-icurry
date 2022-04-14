@@ -145,7 +145,8 @@ public class BinanceTradeService extends BinanceTradeServiceRaw implements Trade
               exchange.getExchangeSpecification().getExchangeSpecificParametersItem("recvWindow");
       BinanceNewOrder newOrder =
           newOrder(
-              order.getCurrencyPair(),
+              //order.getCurrencyPair(),
+              null,
               BinanceAdapters.convert(order.getType()),
               type,
               tif,

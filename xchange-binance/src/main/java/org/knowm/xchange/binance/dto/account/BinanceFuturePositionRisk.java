@@ -3,6 +3,8 @@ package org.knowm.xchange.binance.dto.account;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 /**
  * @author buxianguan
  * @Date 2022/4/1 14:40
@@ -10,18 +12,18 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class BinanceFuturePositionRisk {
-    private String entryPrice;
+    private BigDecimal entryPrice;
     private String marginType;
-    private String isAutoAddMargin;
-    private String isolatedMargin;
-    private String leverage;
-    private String liquidationPrice;
-    private String markPrice;
-    private String maxNotionalValue;
-    private String positionAmt;
+    private Boolean isAutoAddMargin;
+    private BigDecimal isolatedMargin;
+    private BigDecimal leverage;
+    private BigDecimal liquidationPrice;
+    private BigDecimal markPrice;
+    private BigDecimal maxNotionalValue;
+    private BigDecimal positionAmt;
     private String symbol;
-    private String unRealizedProfit;
+    private BigDecimal unRealizedProfit;
     private String positionSide;
     private long updateTime;
-    private String maxQty;
+    private BigDecimal maxQty;
 }
