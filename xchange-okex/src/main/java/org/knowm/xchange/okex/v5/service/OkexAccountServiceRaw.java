@@ -77,6 +77,31 @@ public class OkexAccountServiceRaw extends OkexBaseService {
     }
   }
 
+  public OkexResponse<List<OkexWalletBalance>> getAccountBalances(String currency)
+      throws OkexException, IOException {
+    try {
+      return decorateApiCall(
+              () ->
+                  okexAuthenticated.getAccountBalances(
+                      currency,
+                      exchange.getExchangeSpecification().getApiKey(),
+                      signatureCreator,
+                      DateUtils.toUTCISODateString(new Date()),
+                      (String)
+                          exchange
+                              .getExchangeSpecification()
+                              .getExchangeSpecificParametersItem("passphrase"),
+                      (String)
+                          exchange
+                              .getExchangeSpecification()
+                              .getExchangeSpecificParametersItem("simulated")))
+          .withRateLimiter(rateLimiter(balancePath))
+          .call();
+    } catch (OkexException e) {
+      throw handleError(e);
+    }
+  }
+
   public OkexResponse<List<OkexDepositAddress>> getDepositAddress(String currency)
       throws OkexException, IOException {
     try {

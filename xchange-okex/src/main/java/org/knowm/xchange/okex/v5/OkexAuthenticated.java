@@ -156,6 +156,17 @@ public interface OkexAuthenticated extends Okex {
       throws IOException, OkexException;
 
   @GET
+  @Path(balancePath)
+  OkexResponse<List<OkexWalletBalance>> getAccountBalances(
+          @QueryParam("ccy") String currency,
+          @HeaderParam("OK-ACCESS-KEY") String apiKey,
+          @HeaderParam("OK-ACCESS-SIGN") ParamsDigest signature,
+          @HeaderParam("OK-ACCESS-TIMESTAMP") String timestamp,
+          @HeaderParam("OK-ACCESS-PASSPHRASE") String passphrase,
+          @HeaderParam("X-SIMULATED-TRADING") String simulatedTrading)
+          throws IOException, OkexException;
+
+  @GET
   @Path(currenciesPath)
   OkexResponse<List<OkexCurrency>> getCurrencies(
       @HeaderParam("OK-ACCESS-KEY") String apiKey,

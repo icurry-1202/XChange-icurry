@@ -227,11 +227,11 @@ public class BinanceAccountServiceRaw extends BinanceBaseService {
             .call();
   }
 
-  public List<FundingAsset> getFundingAsset(String asset, String needBtcValuation) throws BinanceException, IOException {
+  public List<FundingAsset> getFundingAsset(String asset, Boolean needBtcValuation) throws BinanceException, IOException {
     return decorateApiCall(
             () -> binance.getFundingAsset(
                     asset,
-                    needBtcValuation,
+                    null == needBtcValuation ? null : String.valueOf(needBtcValuation),
                     getRecvWindow(),
                     getTimestampFactory(),
                     super.apiKey,
