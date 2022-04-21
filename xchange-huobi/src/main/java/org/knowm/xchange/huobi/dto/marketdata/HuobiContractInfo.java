@@ -22,7 +22,7 @@ public class HuobiContractInfo {
     private String contractType;
 
     @JsonProperty("contract_size")
-    private int contractSize;
+    private BigDecimal contractSize;
 
     @JsonProperty("price_tick")
     private BigDecimal priceTick;
@@ -37,7 +37,7 @@ public class HuobiContractInfo {
     private String createDate;
 
     @JsonProperty("contract_status")
-    private int contractStatus;
+    private Integer contractStatus;
 
     @JsonProperty("settlement_time")
     private String settlementTime;

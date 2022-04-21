@@ -4,6 +4,7 @@ import org.knowm.xchange.BaseExchange;
 import org.knowm.xchange.Exchange;
 import org.knowm.xchange.ExchangeSpecification;
 import org.knowm.xchange.exceptions.ExchangeException;
+import org.knowm.xchange.huobi.future.service.HuobiFutureAccountService;
 import org.knowm.xchange.huobi.future.service.HuobiFutureMarketDataService;
 import org.knowm.xchange.huobi.future.service.HuobiFutureTradeService;
 import org.knowm.xchange.huobi.service.HuobiAccountService;
@@ -16,7 +17,7 @@ public class HuobiFutureExchange extends BaseExchange implements Exchange {
     protected void initServices() {
         this.marketDataService = new HuobiFutureMarketDataService(this);
         this.tradeService = new HuobiFutureTradeService(this);
-        this.accountService = new HuobiAccountService(this);
+        this.accountService = new HuobiFutureAccountService(this);
     }
 
     @Override
