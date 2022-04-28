@@ -1,5 +1,6 @@
 package org.knowm.xchange.okex.v5.dto.account;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class OkexAccountLeverage {
     private String instId;
     private String lever;
