@@ -39,11 +39,9 @@ public final class ResilienceUtils {
         try {
           return callable.call();
         } catch (IOException | RuntimeException e) {
-          System.out.println("1============" + e.getMessage());
           e.printStackTrace();
           throw e;
         } catch (Throwable e) {
-          System.out.println("2============" + e.getMessage());
           e.printStackTrace();
           throw new IllegalStateException(e);
         }

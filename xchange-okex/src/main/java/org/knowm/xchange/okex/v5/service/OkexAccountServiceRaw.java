@@ -352,7 +352,7 @@ public class OkexAccountServiceRaw extends OkexBaseService {
 
   public OkexResponse<List<OkexAccountLeverage>> setLeverage(OkexAccountLeverage accountLeverage)
           throws IOException {
-    //try {
+    try {
       return decorateApiCall(
               () ->
                       this.okexAuthenticated.setLeverage(
@@ -370,10 +370,9 @@ public class OkexAccountServiceRaw extends OkexBaseService {
                               accountLeverage))
               .withRateLimiter(rateLimiter(accountSetLeverage))
               .call();
-    //} catch (OkexException e) {
-    //  System.out.println("=====================" + e.toString());
-    //  throw handleError(e);
-    //}
+    } catch (OkexException e) {
+      throw handleError(e);
+    }
   }
 
   public OkexResponse<List<String>> setPositionMode(String posMode)
