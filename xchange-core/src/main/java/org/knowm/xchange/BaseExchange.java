@@ -109,7 +109,7 @@ public abstract class BaseExchange implements Exchange {
 
     if (this.exchangeSpecification.isShouldLoadRemoteMetaData()) {
       try {
-        logger.info("Calling Remote Init...");
+        logger.debug("Calling Remote Init...");
         remoteInit();
       } catch (IOException e) {
         throw new ExchangeException(e);

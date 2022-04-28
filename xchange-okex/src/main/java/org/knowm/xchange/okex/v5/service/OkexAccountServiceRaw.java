@@ -371,6 +371,7 @@ public class OkexAccountServiceRaw extends OkexBaseService {
               .withRateLimiter(rateLimiter(accountSetLeverage))
               .call();
     } catch (OkexException e) {
+      System.out.println("=====================" + e.toString());
       throw handleError(e);
     }
   }
